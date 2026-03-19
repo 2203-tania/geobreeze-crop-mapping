@@ -1,0 +1,13 @@
+_target_: Prithvi
+
+model_dir: /mnt/tania/prithvi_600m_tl
+checkpoint_name: Prithvi_EO_V2_600M_TL.pt
+
+image_resolution: 224
+embed_dim: 1280
+patch_size: 14
+
+blk_indices:
+  segm: [7, 15, 23, 31]
+  linear_probe: [28, 29, 30, 31]
+  default_cls: [31]

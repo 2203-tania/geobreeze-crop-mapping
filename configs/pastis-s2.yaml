@@ -1,0 +1,32 @@
+# Data configuration for PASTIS dataset with Sentinel-2 only
+# Suitable for panopticon and other RGB/multispectral models
+
+defaults:
+- task/segmentation
+
+train:
+  _target_: PASTIS
+  root: ${oc.env:DATASETS_DIR}/pastis-r
+  split: train
+  modality: s2
+  temporal_strategy: mean
+  normalize: true
+  transform: ${_vars.augm.segm.train}
+
+val:
+  _target_: PASTIS
+  root: ${oc.env:DATASETS_DIR}/pastis-r
+  split: val
+  modality: s2
+  temporal_strategy: mean
+  normalize: true
+  transform: ${_vars.augm.segm.val}
+
+test:
+  _target_: PASTIS
+  root: ${oc.env:DATASETS_DIR}/pastis-r
+  split: test
+  modality: s2
+  temporal_strategy: mean
+  normalize: true
+  transform: ${_vars.augm.segm.val}

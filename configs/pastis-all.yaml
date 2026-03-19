@@ -1,0 +1,32 @@
+# Data configuration for PASTIS dataset with all modalities (S2 + S1A + S1D)
+# For panopticon any-sensor model
+
+defaults:
+- task/segmentation
+
+train:
+  _target_: PASTIS
+  root: ${oc.env:DATASETS_DIR}/pastis-r
+  split: train
+  modality: all
+  temporal_strategy: mean
+  normalize: true
+  transform: ${_vars.augm.segm.train}
+
+val:
+  _target_: PASTIS
+  root: ${oc.env:DATASETS_DIR}/pastis-r
+  split: val
+  modality: all
+  temporal_strategy: mean
+  normalize: true
+  transform: ${_vars.augm.segm.val}
+
+test:
+  _target_: PASTIS
+  root: ${oc.env:DATASETS_DIR}/pastis-r
+  split: test
+  modality: all
+  temporal_strategy: mean
+  normalize: true
+  transform: ${_vars.augm.segm.val}

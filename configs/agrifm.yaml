@@ -1,0 +1,13 @@
+_target_: AgriFM
+
+agrifm_repo_path: /mnt/tania/AgriFM
+checkpoint_path: /mnt/tania/AgriFM/AgriFM/datasets/example_dataset/AgriFM.pth
+
+image_resolution: 224
+embed_dim: 1024
+patch_size: 16
+
+blk_indices:
+  segm: [0, 0, 0, 0]
+  linear_probe: [0]
+  default_cls: [0]

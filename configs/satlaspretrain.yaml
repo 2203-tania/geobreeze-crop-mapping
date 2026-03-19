@@ -1,0 +1,13 @@
+_target_: SatlasPretrain
+
+model_identifier: Sentinel2_SwinB_SI_MS
+fpn: false
+
+image_resolution: 224
+embed_dim: 768
+patch_size: 32
+
+blk_indices:
+  segm: [0, 1, 2, 3]
+  linear_probe: [3]
+  default_cls: [3]
