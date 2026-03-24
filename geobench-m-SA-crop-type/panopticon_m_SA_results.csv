@@ -1,0 +1,11 @@
+metric,val,best_classifier
+test/loss,1.4499263763427734,lr=0.0001
+test/CustomJaccard_macro,0.33116626739501953,lr=0.0001
+test/CustomJaccard_micro,0.5132465958595276,lr=0.0001
+test/F1Score_macro,0.4675074815750122,lr=0.0001
+test/F1Score_micro,0.678338348865509,lr=0.0001
+test/acc_top-1_macro,0.45784512162208557,lr=0.0001
+test/acc_top-1_micro,0.678338348865509,lr=0.0001
+test/jaccard_macro,0.33116626739501953,lr=0.0001
+test/jaccard_micro,0.5132465958595276,lr=0.0001
+test/mIoU,0.22276782989501953,lr=0.0001
