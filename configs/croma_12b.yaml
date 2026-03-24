@@ -1,0 +1,13 @@
+
+_target_: Croma
+size: base
+modality: optical
+hf_filename: CROMA_base.pt
+image_resolution: 128
+embed_dim: 768
+patch_size: 8
+replace_pe: true
+blk_indices:
+  segm: [3,5,7,11]
+  linear_probe: [8, 9, 10, 11]
+  default_cls: [11]
