@@ -14,49 +14,68 @@ This repository contains extensions to [geobreeze](https://github.com/geobreeze/
 
 ## Results on PASTIS-R Test Set (mIoU)
 
-All geobreeze experiments use frozen backbone + UPerNet segmentation head (segm_frozen_backbone mode), 50 epochs, AdamW, batch_size=4-8.
+All geobreeze experiments use frozen backbone + UPerNet segmentation head (segm_frozen_backbone mode), 50 epochs, AdamW. All models below use **temporal_strategy=mean** (single image, mean-collapsed across timestamps).
 
-| Model | Modality | Temporal Strategy | mIoU |
+| Model | Modality | mIoU |
+|---|---|---|
+| OlmoEarth | S2 | 25.77% |
+| SatlasPretrain | S2 | 23.66% |
+| Prithvi-EO-2.0-600M-TL | S2 | 21.59% |
+| SSL4EO-S12 DINO | S2 | 21.25% |
+| Panopticon | S1+S2 | 21.07% |
+| CROMA | S2 | 21.07% |
+| AgriFM (geobreeze) | S2 | ~9% |
+
+> **CropSTS published SoTA (parcel-aware): 39.09% mIoU**
+
+### Effect of Temporal Strategy
+
+The table below compares models tested with both mean-collapsed and temporal stack strategies. Stack passes the full time series (T=46 timestamps) to the model instead of collapsing to a single image.
+
+| Model | Temporal Strategy | mIoU | Δ vs Mean |
 |---|---|---|---|
-| AgriFM (standalone, outside geobreeze) | S2 | Full T=32 | 45.08% |
-| OlmoEarth | S2 | mean | 25.77% |
-| SatlasPretrain | S2 | stack + maxpool | 25.29% |
-| Prithvi-EO-2.0-600M-TL | S2 | mean (T=1) | 21.59% |
-| SSL4EO-S12 DINO | S2 | mean | 21.25% |
-| SatlasPretrain | S2 | mean | 23.66% |
-| Panopticon | S1+S2 | mean | 21.07% |
-| CROMA | S2 | mean | 21.07% |
-| AgriFM (geobreeze, stack) | S2 | stack T=32 | 11.09% |
-| AgriFM (geobreeze, mean) | S2 | mean | ~9% |
+| SatlasPretrain | mean | 23.66% | — |
+| SatlasPretrain | stack + maxpool | 25.29% | +1.63pp |
+| AgriFM (geobreeze) | mean | ~9% | — |
+| AgriFM (geobreeze) | stack (T=32 sampled) | 11.09% | +2pp |
 
-### CropSTS published SoTA (parcel-aware): 39.09% mIoU
+> Note: SatlasPretrain stack encodes each frame independently then max-pools over T, similar to its own multi-image pretraining strategy. AgriFM stack uniformly samples 32 frames from 46 timestamps.
 
-> Note: AgriFM standalone and CropSTS use full temporal sequences. Geobreeze experiments use frozen backbones with single-image (mean-collapsed) input except where noted. Parcel-aware models (CropSTS, UTAE) have access to field boundary information not available to foundation models.
+### AgriFM Standalone Temporal Training (Outside Geobreeze)
+
+Training AgriFM end-to-end with its native temporal architecture (outside geobreeze) gives substantially better results, demonstrating the value of full temporal modeling:
+
+| Model | Temporal Strategy | mIoU |
+|---|---|---|
+| AgriFM standalone | Full T=32 | **45.08%** |
+| CropSTS (published SoTA, parcel-aware) | Full temporal | 39.09% |
+
+> AgriFM standalone achieves **+6pp over published SoTA** without using parcel boundary information. See `agrifm-pastis-outside-geobreeze/` for training scripts.
 
 ## Results on GEO-Bench m-SA-crop-type
 
-| Model | mIoU |
+| Model | Results |
 |---|---|
-| Panopticon | see `geobench-m-SA-crop-type/panopticon_m_SA_results.csv` |
-| CROMA | see `geobench-m-SA-crop-type/croma_m_SA_results.csv` |
+| Panopticon | `geobench-m-SA-crop-type/panopticon_m_SA_results.csv` |
+| CROMA | `geobench-m-SA-crop-type/croma_m_SA_results.csv` |
 
 ## Repository Structure
 ```
-├── agrifm.py                          # AgriFM geobreeze wrapper
-├── satlaspretrain_initial_mean.py     # SatlasPretrain (mean temporal)
-├── satlaspretrain_new_temporal_stack.py # SatlasPretrain (stack temporal)
-├── prithvi.py                         # Prithvi-EO-2.0-600M-TL wrapper
-├── ssl4eo.py                          # SSL4EO-S12 DINO wrapper
-├── olmoearth.py                       # OlmoEarth wrapper
-├── pastis_initial_temporal_strategy_mean.py  # PASTIS dataset (mean)
-├── pastis_new_temporal_strategy_stack.py     # PASTIS dataset (stack)
-├── geobench.py                        # GEO-Bench dataset
-├── mmcv_mock_module.py                # mmcv mock (required for AgriFM)
-├── configs/                           # Model and dataset configs
-├── results/                           # Test set results CSVs
-├── visualization/                     # Visualization scripts
-├── geobench-m-SA-crop-type/           # GEO-Bench results and scripts
-└── agrifm-pastis-outside-geobreeze/   # AgriFM standalone temporal training
+├── agrifm.py                                   # AgriFM geobreeze wrapper
+├── satlaspretrain_initial_mean.py              # SatlasPretrain (mean temporal)
+├── satlaspretrain_new_temporal_stack.py        # SatlasPretrain (stack temporal)
+├── prithvi.py                                  # Prithvi-EO-2.0-600M-TL wrapper
+├── ssl4eo.py                                   # SSL4EO-S12 DINO wrapper
+├── olmoearth.py                                # OlmoEarth wrapper
+├── pastis_initial_temporal_strategy_mean.py    # PASTIS dataset (mean)
+├── pastis_new_temporal_strategy_stack.py       # PASTIS dataset (stack)
+├── geobench.py                                 # GEO-Bench dataset
+├── mmcv_mock_module.py                         # mmcv mock (required for AgriFM)
+├── configs/                                    # Model and dataset configs
+├── results/                                    # Test set results CSVs
+├── visualization/                              # Visualization scripts
+├── geobench-m-SA-crop-type/                    # GEO-Bench results and scripts
+└── agrifm-pastis-outside-geobreeze/            # AgriFM standalone temporal training
 ```
 
 ## Usage
@@ -93,10 +112,6 @@ python geobreeze/main.py +model=base/satlaspretrain +data=pastis-s2-stack +optim
 # GEO-Bench m-SA-crop-type with Panopticon
 python geobreeze/main.py +model=base/panopticon +data=m-SA-crop-type +optim=segmentation output_dir=outputs/panopticon_SA
 ```
-
-## AgriFM Outside Geobreeze
-
-See `agrifm-pastis-outside-geobreeze/` for full temporal training scripts achieving **45.08% mIoU** on PASTIS-R test set — outperforming published SoTA (CropSTS: 39.09%) without using parcel boundary information.
 
 ## Requirements
 
