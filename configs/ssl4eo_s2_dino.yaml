@@ -1,0 +1,12 @@
+_target_: SSL4EO
+
+weights_id: SENTINEL2_ALL_DINO  # or SENTINEL2_ALL_MOCO
+
+image_resolution: 224
+embed_dim: 384
+patch_size: 16
+
+blk_indices:
+  segm: [2, 5, 8, 11]
+  linear_probe: [9, 10, 11]
+  default_cls: [11]

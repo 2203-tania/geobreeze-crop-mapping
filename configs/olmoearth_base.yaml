@@ -1,0 +1,12 @@
+_target_: OlmoEarth
+
+model_id: OLMOEARTH_V1_BASE
+
+image_resolution: 128
+embed_dim: 768
+patch_size: 4
+
+blk_indices:
+  segm: [0, 1, 2, 3]
+  linear_probe: [0]
+  default_cls: [0]
